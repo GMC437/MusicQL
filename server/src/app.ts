@@ -1,29 +1,9 @@
-import express from 'express';
-import graphqlHTTP from 'express-graphql';
-import { buildSchema } from 'graphql';
-const app = express();
-const port = 4000;
+import { ApolloServer } from "apollo-server";
+import { typeDefs } from "./typeDefs";
+import { resolvers } from "./resolvers";
 
-const schema = buildSchema(`
-    type Query {
-        hello: String
-    }
-`);
-const root = {
-    hello: (): string => {
-        return "Hey everyone!"
-    }
-}
+const server = new ApolloServer({ typeDefs, resolvers });
 
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true
-}))
-
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`server is listening on ${port}`);
+server.listen().then(({ url }) => {
+  console.log(`🚀  Server ready at ${url}`);
 });
